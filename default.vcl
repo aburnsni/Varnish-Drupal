@@ -31,6 +31,9 @@ acl internal {
 
 # This function is used when a request is send by a HTTP client (Browser)
 sub vcl_recv {
+  # Enable to disable varnish, Uncomment to enable Varnish
+  # return (pipe);
+
   # Normalize the header, remove the port (in case you're testing this on various TCP ports)
   set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
 
