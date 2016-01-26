@@ -193,7 +193,14 @@ sub vcl_recv {
       req.url ~ "^/flag/.*$" ||
       req.url ~ "^/batch/.*$" ||
       req.url ~ "^.*/ajax/.*$" ||
-      req.url ~ "^.*/ahah/.*$") {
+      req.url ~ "^.*/ahah/.*$" ||
+      req.url ~ "^/node-gallery/json/.*$" ||
+      req.url ~ "^.*/upload$" ||
+      req.url ~ "^.*/plupload/.*$" ||
+      req.url ~ "^/hybridauth/window/.*$" ||
+      req.url ~ "^.*/fonts/.*$" ||
+      req.url ~ "^/phpmyadmin/.*$" ||
+      req.url ~ "^/mod_pagespeed_beacon.*$") {
     return (pass);
   }
 
