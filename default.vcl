@@ -29,7 +29,7 @@ acl internal {
   # Ex: 162.xxx.xx.xx
 }
 
-# This function is used when a request is send by a HTTP client (Browser) 
+# This function is used when a request is send by a HTTP client (Browser)
 sub vcl_recv {
   # Normalize the header, remove the port (in case you're testing this on various TCP ports)
   set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
@@ -39,7 +39,7 @@ sub vcl_recv {
 
   # Check if request is allowed to invoke cache purge, Allow purging.
   if (req.method == "PURGE") {
-    if (!client.ip ~ purge) { 
+    if (!client.ip ~ purge) {
       # purge is the ACL defined at the begining
       # Not from an allowed IP? Then die with an error.
       return (synth(405, "Forbidden - Not allowed."));
@@ -120,7 +120,7 @@ sub vcl_recv {
 
   # Remove a ";" prefix in the cookie if present
   set req.http.Cookie = regsuball(req.http.Cookie, "^;\s*", "");
-  
+
   # Remove any Piiwik based cookies
   set req.http.Cookie = regsuball(req.http.Cookie, "(^|;\s*)(_pk_(ses|id)[\.a-z0-9]*)=[^;]*", ""); # removes Piwik cookies
 
@@ -236,7 +236,7 @@ sub vcl_pipe {
 
   return (pipe);
 }
- 
+
 sub vcl_pass {
   # Called upon entering pass mode. In this mode, the request is passed on to the backend, and the
   # backend's response is passed on to the client, but is not entered into the cache. Subsequent
@@ -333,7 +333,7 @@ sub vcl_miss {
 
   return (fetch);
 }
- 
+
 # This function is used when a request is sent by our backend (Nginx server)
 sub vcl_backend_response {
   # Called after the response headers has been successfully retrieved from the backend.
@@ -388,40 +388,40 @@ sub vcl_backend_response {
   # make Varnish keep all objects for 6 hours beyond their TTL
   set beresp.grace = 6h;
 
-	# Only allow cookies to be set if we're in admin area
-#	if (beresp.http.Set-Cookie && bereq.url !~ "^/wp-(login|admin)") {
-#        	unset beresp.http.Set-Cookie;
-#   	}
+  # Only allow cookies to be set if we're in admin area
+  # if (beresp.http.Set-Cookie && bereq.url !~ "^/wp-(login|admin)") {
+  #   unset beresp.http.Set-Cookie;
+  # }
 
-	# don't cache response to posted requests or those with basic auth
-#	if ( bereq.method == "POST" || bereq.http.Authorization ) {
-#        	set beresp.uncacheable = true;
-#		set beresp.ttl = 120s;
-#		return (deliver);
-#    	}
- 
-    	# don't cache search results
-#	if ( bereq.url ~ "\?s=" ){
-#		set beresp.uncacheable = true;
-#                set beresp.ttl = 120s;
-#                return (deliver);
-#	}
-    
-	# only cache status ok
-#	if ( beresp.status != 200 ) {
-#		set beresp.uncacheable = true;
-#                set beresp.ttl = 120s;
-#                return (deliver);
-#	}
+  # don't cache response to posted requests or those with basic auth
+  # if ( bereq.method == "POST" || bereq.http.Authorization ) {
+  #   set beresp.uncacheable = true;
+  #   set beresp.ttl = 120s;
+  #   return (deliver);
+  # }
 
-	# A TTL of 24h
-#	set beresp.ttl = 24h;
-	# Define the default grace period to serve cached content
-#	set beresp.grace = 30s;
-	
+  # don't cache search results
+  # if ( bereq.url ~ "\?s=" ){
+  #   set beresp.uncacheable = true;
+  #   set beresp.ttl = 120s;
+  #   return (deliver);
+  # }
+
+  # only cache status ok
+  # if ( beresp.status != 200 ) {
+  #   set beresp.uncacheable = true;
+  #   set beresp.ttl = 120s;
+  #   return (deliver);
+  # }
+
+  # A TTL of 24h
+  # set beresp.ttl = 24h;
+  # Define the default grace period to serve cached content
+  # set beresp.grace = 30s;
+
   return (deliver);
 }
- 
+
 # The routine when we deliver the HTTP request to the user
 # Last chance to modify headers that are sent to the client
 sub vcl_deliver {
