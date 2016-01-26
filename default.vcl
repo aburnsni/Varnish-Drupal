@@ -34,6 +34,11 @@ sub vcl_recv {
   # Enable to disable varnish, Uncomment to enable Varnish
   # return (pipe);
 
+  if (req.http.host == "testing.flemingfulton.org.uk" ||
+      req.http.host ~ "btdr.net") {
+        return (pipe);
+  }
+
   # Normalize the header, remove the port (in case you're testing this on various TCP ports)
   set req.http.Host = regsub(req.http.Host, ":[0-9]+", "");
 
